@@ -27,14 +27,18 @@ def add(bot, update):
         set_pochta = r.set(chat_id, user_code)
 
 def get(bot, update):
-	tracking_number = update.message.text.split(" ")[1]
-	user_data = r.get('chat_id:'+ str(update.message.chat_id))
-	if user_data is None:
-		bot.sendMessage(update.message.chat_id, text='nicho net')
-		return
+    print(update.message.text)
+    tracking_number = update.message.text.split(" ")[1]
+    print(tracking_number)
+    user_data = r.get('chat_id:'+ str(update.message.chat_id))
+    print(user_data)
+    if user_data is None:
+        bot.sendMessage(update.message.chat_id, text='nicho net')
+        return
 
-	list_of_user_codes = user_code.decode('utf-8').split(',')  # [23, 77, 59]
-	bot.sendMessage(update.message.chat_id, text=list_of_user_codes[int(tracking_number) - 1])
+    list_of_user_codes = user_data.decode('utf-8').split(',')  # [23, 77, 59]
+    print(list_of_user_codes)
+    bot.sendMessage(update.message.chat_id, text=list_of_user_codes[int(tracking_number) - 1])
 
 
 def run_bot():
