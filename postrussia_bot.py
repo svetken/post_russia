@@ -8,6 +8,7 @@ def start(bot, update):
 	print("Вызван /start")
 	bot.sendMessage(update.message.chat_id, text="Welcome to the friendliest service ever - Post of Russia!")
 
+
 def add(bot, update):
     pochta_add = update.message.text
     pochta_add = pochta_add.split()
@@ -27,18 +28,48 @@ def add(bot, update):
         set_pochta = r.set(chat_id, user_code)
 
 def get(bot, update):
-    print(update.message.text)
     tracking_number = update.message.text.split(" ")[1]
-    print(tracking_number)
     user_data = r.get('chat_id:'+ str(update.message.chat_id))
-    print(user_data)
     if user_data is None:
         bot.sendMessage(update.message.chat_id, text='nicho net')
         return
 
     list_of_user_codes = user_data.decode('utf-8').split(',')  # [23, 77, 59]
-    print(list_of_user_codes)
     bot.sendMessage(update.message.chat_id, text=list_of_user_codes[int(tracking_number) - 1])
+
+def info(bot, update):
+    print('Пользователь интересуется, а что это он там ждет от Почты России')
+    chat_id = 'chat_id:'+ str(update.message.chat_id)
+    pochta_info = r.get(chat_id)
+    pochta_info = pochta_info.decode('utf-8').split(',')
+    print(pochta_info)
+    pochta_result = ''
+    for i, element in enumerate(pochta_info):
+        pochta_result += ('{}. {}'.format(i+1, element)) 
+        pochta_result += '\n'
+    bot.sendMessage(update.message.chat_id, text=pochta_result)
+
+def delete(bot, update):
+    chat_id = 'chat_id:'+ str(update.message.chat_id)
+    list_of_parcels = r.get(chat_id)
+    list_of_parcels.split(' ')
+    print('Here is your current list: ', list_of_parcels)
+
+    what_to_del = input('Which one do you wanna delete? ')
+    if int(what_to_del) > len(list_of_parcels):
+        print('wtf are you doing?')
+    elif int(what_to_del) <= 0:
+        print('Nothing to delete')
+    else:
+        del list_of_parcels[int(what_to_del) - 1]
+    
+    print('Okay. Thats what you have for now', list_of_parcels)
+
+
+
+
+
+
 
 
 def run_bot():
@@ -48,6 +79,8 @@ def run_bot():
 	dp.add_handler(CommandHandler("start", start))
 	dp.add_handler(CommandHandler("add", add))
 	dp.add_handler(CommandHandler("get", get))
+    dp.add_handler(CommandHandler("info", info))
+    dp.add_handler(CommandHandler("delete", delete))
 
 	updater.start_polling()
 	updater.idle()
