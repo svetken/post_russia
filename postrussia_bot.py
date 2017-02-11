@@ -24,22 +24,19 @@ def info(bot, update):
 
 def add(bot, update):
     print('Добавление почтового отправления')
-    pochta_add = update.message.text
-    pochta_add = pochta_add.split()
-    pochta_add = pochta_add[1]
+    tracking_number = update.message.text.split()[1]
     chat_id = 'chat_id:'+ str(update.message.chat_id)
-    user_code = r.get(chat_id)
-    if user_code is None:
-        get_pochta = r.set(chat_id, str(pochta_add))
-        print(get_pochta)
+    list_of_parcels_str = r.get(chat_id)
+    if list_of_parcels_str is None:
+        r.set(chat_id, str(tracking_number))
     else:
-        user_code = user_code.decode('utf-8').split(',')
-        if pochta_add in user_code:
+        list_of_parcels = list_of_parcels_str.decode('utf-8').split(',')
+        if tracking_number in list_of_parcels:
             bot.sendMessage(update.message.chat_id, text='Вообще-то его мы уже добавили =РРР')
             return
-        user_code.append(pochta_add)
-        user_code = ','.join(user_code)
-        set_pochta = r.set(chat_id, user_code)
+        list_of_parcels.append(tracking_number)
+        list_of_parcels_str = ','.join(list_of_parcels)
+        r.set(chat_id, list_of_parcels_str)
     bot.sendMessage(update.message.chat_id, text='Всё добавили, теперь будем следить')
 
 def get(bot, update):
