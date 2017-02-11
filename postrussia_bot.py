@@ -48,13 +48,8 @@ def get(bot, update):
     if user_data is None:
         bot.sendMessage(update.message.chat_id, text='nicho net')
         return
-<<<<<<< HEAD
 
     list_of_user_codes = user_data.decode('utf-8').split(',')  # [23, 77, 59]
-=======
-    list_of_user_codes = user_data.decode('utf-8').split(',')
-    print(list_of_user_codes)
->>>>>>> c6d719952abd48900d05d9fd8910cb2872a42029
     bot.sendMessage(update.message.chat_id, text=list_of_user_codes[int(tracking_number) - 1])
 
 def info(bot, update):
